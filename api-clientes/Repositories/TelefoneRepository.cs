@@ -108,15 +108,15 @@ namespace api_clientes.Repositories
             }
         }
 
-        public int Update(TelefoneModel telefone)
+        public int Update(TelefoneModel telefone, int id)
         {
             try
             {
                 using (var cn = Conexao.AbrirConexao())
                 {
-                    var resposta = cn.ExecuteScalar<int>(@"UPDATE TELEFONES SET TIPO = @TIPO, NUMERO = @NUMERO, ID_CLIENTE = @ID_CLIENTE WHERE ID = @ID  ", new
+                    var resposta = cn.ExecuteScalar<int>(@"UPDATE TELEFONES SET TIPO = @TIPO, NUMERO = @NUMERO, ID_CLIENTE = @ID_CLIENTE WHERE ID = @id  ", new
                     {
-                        telefone.ID,
+                        id,
                         telefone.TIPO,
                         telefone.NUMERO,
                         telefone.ID_CLIENTE

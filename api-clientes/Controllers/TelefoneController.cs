@@ -36,13 +36,10 @@ namespace api_clientes.Controllers
             return service.GetAll();
         }
 
-
         [HttpGet("{id}")]
         [AllowAnonymous]
         public ActionResult<dynamic> Get(int id)
         {
-
-
             return service.Get(id);
         }
 
@@ -50,8 +47,6 @@ namespace api_clientes.Controllers
         [AllowAnonymous]
         public ActionResult<dynamic> GetTelefoneCliente(int id)
         {
-
-
             return service.GetTelefonesCliente(id);
         }
 
@@ -62,13 +57,12 @@ namespace api_clientes.Controllers
             return service.Post(telefone);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [AllowAnonymous]
-        public ActionResult<dynamic> Put([FromBody] TelefoneModel telefone)
+        public ActionResult<dynamic> Put([FromBody] TelefoneModel telefone, int id)
         {
-            return service.Update(telefone);
+            return service.Update(telefone, id);
         }
-
 
     }
 }

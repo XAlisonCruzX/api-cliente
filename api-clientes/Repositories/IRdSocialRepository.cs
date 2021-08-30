@@ -15,7 +15,7 @@ namespace api_clientes.Repositories
 
         RedeSocialModel Get(int id);
 
-        int Update(RedeSocialModel redeSocial);
+        int Update(RedeSocialModel redeSocial, int id);
 
         int Delete(int id);
     }

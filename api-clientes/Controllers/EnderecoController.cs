@@ -59,11 +59,11 @@ namespace api_clientes.Controllers
             return service.Post(endereco);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [AllowAnonymous]
-        public ActionResult<dynamic> Put([FromBody] EnderecoModel endereco)
+        public ActionResult<dynamic> Put([FromBody] EnderecoModel endereco, int id)
         {
-            return service.Update(endereco);
+            return service.Update(endereco, id);
         }
 
     }

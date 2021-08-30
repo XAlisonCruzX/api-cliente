@@ -15,7 +15,7 @@ namespace api_clientes.Repositories
         List<TelefoneModel> GetTelefonesCliente(int id_cliente);
         TelefoneModel Get(int id);
 
-        int Update(TelefoneModel telefone);
+        int Update(TelefoneModel telefone, int id);
 
         int Delete(int id);
     }

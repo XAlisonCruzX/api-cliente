@@ -194,7 +194,7 @@ namespace api_clientes.Services
         }
 
 
-        public dynamic Update(RedeSocialModel rdSocial)
+        public dynamic Update(RedeSocialModel rdSocial, int id)
         {
             try
             {
@@ -219,7 +219,7 @@ namespace api_clientes.Services
 
                 }
 
-                var resposta = repositorio.Update(rdSocial);
+                var resposta = repositorio.Update(rdSocial, id);
 
                 return new
                 {

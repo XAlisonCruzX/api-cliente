@@ -111,15 +111,15 @@ namespace api_clientes.Repositories
             }
         }
 
-        public int Update(EnderecoModel endereco)
+        public int Update(EnderecoModel endereco, int id)
         {
             try
             {
                 using (var cn = Conexao.AbrirConexao())
                 {
-                    var resposta = cn.ExecuteScalar<int>(@"UPDATE ENDERECOS SET TIPO = @TIPO, CEP = @CEP, RUA = @RUA, NUMERO = @NUMERO, ID_CLIENTE = @ID_CLIENTE WHERE ID = @ID  ", new
+                    var resposta = cn.ExecuteScalar<int>(@"UPDATE ENDERECOS SET TIPO = @TIPO, CEP = @CEP, RUA = @RUA, NUMERO = @NUMERO, ID_CLIENTE = @ID_CLIENTE WHERE ID = @id  ", new
                     {
-                        endereco.ID,
+                        id,
                         endereco.TIPO,
                         endereco.CEP,
                         endereco.RUA,

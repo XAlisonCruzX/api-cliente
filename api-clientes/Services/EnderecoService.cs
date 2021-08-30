@@ -182,7 +182,7 @@ namespace api_clientes.Services
         }
 
 
-        public dynamic Update(EnderecoModel endereco)
+        public dynamic Update(EnderecoModel endereco, int id)
         {
             try
             {
@@ -207,7 +207,7 @@ namespace api_clientes.Services
 
                 }
 
-                var resposta = repositorio.Update(endereco);
+                var resposta = repositorio.Update(endereco, id);
 
                 return new
                 {

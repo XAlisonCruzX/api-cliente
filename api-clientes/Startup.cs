@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,6 +38,7 @@ namespace api_clientes
 
             services.AddCors(op => op.AddDefaultPolicy(
                 builder => builder
+                    .WithOrigins("http://127.0.0.1:3000", "http://localhost:3000")
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
@@ -65,7 +65,7 @@ namespace api_clientes
 
             //SERVICE
             services.AddScoped(sp => new EnderecoService(sp.GetService<IEnderecoRepository>()));
-            services.AddScoped(sp => new ClienteService(sp.GetService<IClienteRepository>(), sp.GetService<EnderecoService>(), sp.GetService<TelefoneService>(), sp.GetService<RdSocialService>()));
+            services.AddScoped(sp => new ClienteService(sp.GetService<IClienteRepository>(), sp.GetService<IEnderecoRepository>(), sp.GetService<ITelefoneRepository>(), sp.GetService<IRdSocialRepository>()));
             services.AddScoped(sp => new RdSocialService(sp.GetService<IRdSocialRepository>()));
             services.AddScoped(sp => new TelefoneService(sp.GetService<ITelefoneRepository>()));
             
@@ -83,7 +83,7 @@ namespace api_clientes
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {

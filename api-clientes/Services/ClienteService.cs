@@ -12,11 +12,11 @@ namespace api_clientes.Services
 
         private IClienteRepository repositorio;
 
-        private EnderecoService serviceE;
-        private TelefoneService serviceT;
-        private RdSocialService serviceRS;
+        private IEnderecoRepository serviceE;
+        private ITelefoneRepository serviceT;
+        private IRdSocialRepository serviceRS;
 
-        public ClienteService(IClienteRepository repositorio, EnderecoService serviceE, TelefoneService serviceT, RdSocialService serviceRS)
+        public ClienteService(IClienteRepository repositorio, IEnderecoRepository serviceE, ITelefoneRepository serviceT, IRdSocialRepository serviceRS)
         {
             this.repositorio = repositorio;
             this.serviceE = serviceE;
@@ -27,13 +27,26 @@ namespace api_clientes.Services
 
         public dynamic GetAll()
         {
+            var resposta = repositorio.GetAll();
+            List<ClienteAllModel> listaClientes = new List<ClienteAllModel>();
+            foreach (var cadaCliente in resposta)
+            {
+                var respostaT = serviceT.GetTelefonesCliente(cadaCliente.ID);
+                var respostaE = serviceE.GetEnderecoCliente(cadaCliente.ID);
+                var respostaRS = serviceRS.GetRdSocialCliente(cadaCliente.ID);
+
+                listaClientes.Add(new ClienteAllModel(cadaCliente, respostaT, respostaE, respostaRS));
+                
+            }
+            
+
             try
             {
                 return new
                 {
                     status = 200,
                     message = "Registros listados com sucesso",
-                    data = repositorio.GetAll()
+                    data = listaClientes
                 };
             }
             catch (Exception e)
@@ -41,12 +54,12 @@ namespace api_clientes.Services
                 return new
                 {
                     status = 500,
-                    message = "Erro ao listar registros: " + e.Message ,
+                    message = "Erro ao listar registros: " + e.Message,
                     data = ""
                 };
             }
         }
-       
+
 
 
         public dynamic Get(int id)
@@ -54,15 +67,12 @@ namespace api_clientes.Services
             try
             {
 
-
                 var resposta = repositorio.Get(id);
-
                 var respostaT = serviceT.GetTelefonesCliente(id);
-
-                var respostaE = serviceE.GetEnderecosCliente(id);
-
+                var respostaE = serviceE.GetEnderecoCliente(id);
                 var respostaRS = serviceRS.GetRdSocialCliente(id);
 
+                ClienteAllModel cliente = new ClienteAllModel(resposta, respostaT,respostaE, respostaRS);
 
                 if (resposta == null)
                 {
@@ -80,10 +90,7 @@ namespace api_clientes.Services
                     message = "Registro encontrado",
                     data = new
                     {
-                        Cliente = resposta,
-                        Telefones = respostaT.data,
-                        Enderecos = respostaE.data,
-                        RedesSociais = respostaRS.data
+                        Cliente = cliente
                     }
                 };
             }
@@ -99,7 +106,7 @@ namespace api_clientes.Services
         }
 
 
-       
+
 
 
         public dynamic Delete(int id)
@@ -141,7 +148,7 @@ namespace api_clientes.Services
         public dynamic Post(ClienteModel cliente)
         {
             try
-            {
+            {   
                 if (String.IsNullOrEmpty(cliente.NOME) || String.IsNullOrEmpty(cliente.RG) || String.IsNullOrEmpty(cliente.DATA_NASCIMENTO.ToString()) || String.IsNullOrEmpty(cliente.CPF))
                 {
                     return new
@@ -185,7 +192,7 @@ namespace api_clientes.Services
         }
 
 
-        public dynamic Update(ClienteModel cliente)
+        public dynamic Update(ClienteModel cliente, int id)
         {
             try
             {
@@ -197,9 +204,18 @@ namespace api_clientes.Services
                         message = "Campo vazio",
                         data = cliente
                     };
+                } else if (id <= 0)
+                {
+                    return new
+                    {
+                        status = 500,
+                        message = "ID Invalido",
+                        data = cliente
+                    };
+
                 }
 
-                var resposta = repositorio.Update(cliente);
+                var resposta = repositorio.Update(cliente, id);
 
                 return new
                 {
@@ -228,6 +244,64 @@ namespace api_clientes.Services
                         data = cliente
                     };
                 }
+            }
+        }
+
+
+        public dynamic GetPag(int pag, int quant)
+        {
+            try
+            {
+                int offset = pag * quant;
+                var resposta = repositorio.GetPag(offset, quant);
+                var tamanhoLista = repositorio.GetAll().Count();
+                return new
+                {
+                    status = 200,
+                    message = "Registro encontrado",
+                    data = new { 
+                        listaCliente = resposta,
+                        quantTamLista = tamanhoLista
+                    }
+                };
+            }
+            catch (Exception)
+            {
+                return new
+                {
+                    status = 500,
+                    message = "Erro ao encontrar registro",
+                    data = pag 
+                };
+            }
+        }
+
+        public dynamic GetPag(int pag, int quant, string nome)
+        {
+            try
+            {
+                int offset = pag * quant;
+                var resposta = repositorio.GetPag(offset, quant, nome);
+                var tamanhoLista = repositorio.GetAll(nome).Count();
+                return new
+                {
+                    status = 200,
+                    message = "Registro encontrado",
+                    data = new
+                    {
+                        listaCliente = resposta,
+                        quantTamLista = tamanhoLista
+                    }
+                };
+            }
+            catch (Exception)
+            {
+                return new
+                {
+                    status = 500,
+                    message = "Erro ao encontrar registro",
+                    data = pag
+                };
             }
         }
 

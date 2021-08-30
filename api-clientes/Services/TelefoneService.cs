@@ -193,7 +193,7 @@ namespace api_clientes.Services
         }
 
 
-        public dynamic Update(TelefoneModel telefone)
+        public dynamic Update(TelefoneModel telefone,int id)
         {
             try
             {
@@ -218,7 +218,7 @@ namespace api_clientes.Services
 
                 }
 
-                var resposta = repositorio.Update(telefone);
+                var resposta = repositorio.Update(telefone, id);
 
                 return new
                 {

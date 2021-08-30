@@ -61,11 +61,11 @@ namespace api_clientes.Controllers
             return service.Post(rdSocial);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [AllowAnonymous]
-        public ActionResult<dynamic> Put([FromBody] RedeSocialModel rdSocial)
+        public ActionResult<dynamic> Put([FromBody] RedeSocialModel rdSocial, int id)
         {
-            return service.Update(rdSocial);
+            return service.Update(rdSocial, id);
         }
 
 

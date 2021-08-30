@@ -17,7 +17,7 @@ namespace api_clientes.Repositories
 
         List<EnderecoModel> GetEnderecoCliente(int id_cliente);
 
-        int Update(EnderecoModel endereco);
+        int Update(EnderecoModel endereco, int id);
 
         int Delete(int id);
 

@@ -108,15 +108,15 @@ namespace api_clientes.Repositories
             }
         }
 
-        public int Update(RedeSocialModel redeSocial)
+        public int Update(RedeSocialModel redeSocial, int id)
         {
             try
             {
                 using (var cn = Conexao.AbrirConexao())
                 {
-                    var resposta = cn.ExecuteScalar<int>(@"UPDATE REDES_SOCIAIS SET NOME = @NOME, REFERENCIA = @REFERENCIA, ID_CLIENTE = @ID_CLIENTE WHERE ID = @ID  ", new
+                    var resposta = cn.ExecuteScalar<int>(@"UPDATE REDES_SOCIAIS SET NOME = @NOME, REFERENCIA = @REFERENCIA, ID_CLIENTE = @ID_CLIENTE WHERE ID = @id  ", new
                     {
-                        redeSocial.ID,
+                        id,
                         redeSocial.NOME,
                         redeSocial.REFERENCIA,
                         redeSocial.ID_CLIENTE
