@@ -38,9 +38,9 @@ namespace api_clientes.Services
                 var respostaRS = serviceRS.GetRdSocialCliente(cadaCliente.ID);
 
                 listaClientes.Add(new ClienteAllModel(cadaCliente, respostaT, respostaE, respostaRS));
-                
+
             }
-            
+
             // retorna um obj anonimo customizado como resposta
             try
             {
@@ -67,14 +67,16 @@ namespace api_clientes.Services
         {
             try
             {
-
+                if (repositorio.Get(id).ID <= 0)
+                {
+                    return new
+                    {
+                        status = 500,
+                        message = "Registro não encontrado",
+                        data = id
+                    };
+                }
                 var resposta = repositorio.Get(id);
-                var respostaT = serviceT.GetTelefonesCliente(id);
-                var respostaE = serviceE.GetEnderecoCliente(id);
-                var respostaRS = serviceRS.GetRdSocialCliente(id);
-                // busca em todos repositorios a informaçoes do cliente baseado no id
-                ClienteAllModel cliente = new ClienteAllModel(resposta, respostaT,respostaE, respostaRS);
-                
                 // se nao encontrar
                 if (resposta == null)
                 {
@@ -85,6 +87,13 @@ namespace api_clientes.Services
                         data = id
                     };
                 }
+
+                var respostaT = serviceT.GetTelefonesCliente(id);
+                var respostaE = serviceE.GetEnderecoCliente(id);
+                var respostaRS = serviceRS.GetRdSocialCliente(id);
+
+                // busca em todos repositorios a informaçoes do cliente baseado no id
+                ClienteAllModel cliente = new ClienteAllModel(resposta, respostaT, respostaE, respostaRS);
 
                 // se der certo
                 return new
@@ -152,7 +161,7 @@ namespace api_clientes.Services
         public dynamic Post(ClienteModel cliente)
         {
             try
-            {   
+            {
                 // verifica se existe algum campo vazio
                 if (String.IsNullOrEmpty(cliente.NOME) || String.IsNullOrEmpty(cliente.RG) || String.IsNullOrEmpty(cliente.DATA_NASCIMENTO.ToString()) || String.IsNullOrEmpty(cliente.CPF))
                 {
@@ -176,7 +185,8 @@ namespace api_clientes.Services
                 }
 
                 // validacao regex de rg
-                if (!isRg(cliente.RG)) {
+                if (!isRg(cliente.RG))
+                {
                     return new
                     {
                         status = 500,
@@ -234,8 +244,9 @@ namespace api_clientes.Services
                     };
 
 
-                  //verifica se id é valido
-                } else if (id <= 0)
+                    //verifica se id é valido
+                }
+                else if (id <= 0)
                 {
                     return new
                     {
@@ -315,7 +326,8 @@ namespace api_clientes.Services
                 {
                     status = 200,
                     message = "Registro encontrado",
-                    data = new { 
+                    data = new
+                    {
                         listaCliente = resposta,
                         quantTamLista = tamanhoLista
                     }
@@ -327,7 +339,7 @@ namespace api_clientes.Services
                 {
                     status = 500,
                     message = "Erro ao encontrar registro",
-                    data = pag 
+                    data = pag
                 };
             }
         }
@@ -377,6 +389,7 @@ namespace api_clientes.Services
         public bool isRg(string rg)
         {
             Regex validador = new Regex(@"(^(\d{2}\x2E\d{3}\x2E\d{3}[-]\d{1})$|^(\d{2}\x2E\d{3}\x2E\d{3})$)");
+
             MatchCollection matches = validador.Matches(rg);
             return matches.Count > 0;
 

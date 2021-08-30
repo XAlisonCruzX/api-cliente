@@ -19,7 +19,6 @@ namespace api_clientes.Controllers
             this.service = service;
         }
 
-
         [HttpDelete("{id}")]
         [AllowAnonymous]
         public ActionResult<dynamic> Delele(int id)
