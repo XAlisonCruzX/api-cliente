@@ -17,6 +17,7 @@ namespace api_clientes.Repositories
             this.Conexao = Conexao;
         }
 
+        // Adiciona rede social amarrada a um cliente
         public int Add(RedeSocialModel redeSocial)
         {
             try
@@ -35,12 +36,13 @@ namespace api_clientes.Repositories
                     return resposta;
                 }
             }
-            catch (Exception )
+            catch (Exception)
             {
-                throw ;
+                throw;
             }
         }
 
+        //Deleta endereco pelo id
         public int Delete(int id)
         {
             try
@@ -57,6 +59,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        // Retorna rede social pelo id
         public RedeSocialModel Get(int id)
         {
             try
@@ -74,6 +77,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        //lista todas redes sociais 
         public List<RedeSocialModel> GetAll()
         {
             try
@@ -91,6 +95,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        //lista todas redes sociais pelo id do cliente
         public List<RedeSocialModel> GetRdSocialCliente(int id_cliente)
         {
             try
@@ -108,6 +113,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        // Atualiza rede social pelo id
         public int Update(RedeSocialModel redeSocial, int id)
         {
             try

@@ -17,6 +17,7 @@ namespace api_clientes.Repositories
             this.Conexao = Conexao;
         }
 
+        // Adiciona telefone amarrada a algum cliente
         public int Add(TelefoneModel telefone)
         {
             try
@@ -41,6 +42,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        //Deleta telefone pelo id
         public int Delete(int id)
         {
             try
@@ -57,6 +59,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        // retorna telefone pelo id
         public TelefoneModel Get(int id)
         {
             try
@@ -74,6 +77,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        // lista todos telefones
         public List<TelefoneModel> GetAll()
         {
             try
@@ -91,6 +95,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        //lista todos telefones amarrados a um cliente
         public List<TelefoneModel> GetTelefonesCliente(int id_cliente)
         {
             try
@@ -108,6 +113,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        // Atualiza telefone pelo id
         public int Update(TelefoneModel telefone, int id)
         {
             try

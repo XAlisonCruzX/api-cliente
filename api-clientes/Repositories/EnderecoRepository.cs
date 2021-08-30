@@ -17,7 +17,7 @@ namespace api_clientes.Repositories
             this.Conexao = Conexao;
         }
 
-
+        // Adiciona endereco amarrado a algum cliente
         public int Add(EnderecoModel endereco)
         {
             try
@@ -44,6 +44,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        // Deleta endereco pelo id
         public int Delete(int id)
         {
             try
@@ -60,6 +61,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        //Retornar endereco pelo id
         public EnderecoModel Get(int id)
         {
             try
@@ -77,6 +79,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        // lista todos enderecos
         public List<EnderecoModel> GetAll()
         {
             try
@@ -94,6 +97,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        //lista todos enderecos por id cliente
         public List<EnderecoModel> GetEnderecoCliente(int id_cliente)
         {
             try
@@ -111,6 +115,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        // atualiza dados do endereco
         public int Update(EnderecoModel endereco, int id)
         {
             try

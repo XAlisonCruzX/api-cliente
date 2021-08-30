@@ -3,6 +3,7 @@ using api_clientes.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace api_clientes.Services
@@ -29,6 +30,7 @@ namespace api_clientes.Services
         {
             var resposta = repositorio.GetAll();
             List<ClienteAllModel> listaClientes = new List<ClienteAllModel>();
+            //Para cada cliente adiciona suas listas de Telefones, Enderecos e Rede sociais
             foreach (var cadaCliente in resposta)
             {
                 var respostaT = serviceT.GetTelefonesCliente(cadaCliente.ID);
@@ -39,7 +41,7 @@ namespace api_clientes.Services
                 
             }
             
-
+            // retorna um obj anonimo customizado como resposta
             try
             {
                 return new
@@ -61,7 +63,6 @@ namespace api_clientes.Services
         }
 
 
-
         public dynamic Get(int id)
         {
             try
@@ -71,9 +72,10 @@ namespace api_clientes.Services
                 var respostaT = serviceT.GetTelefonesCliente(id);
                 var respostaE = serviceE.GetEnderecoCliente(id);
                 var respostaRS = serviceRS.GetRdSocialCliente(id);
-
+                // busca em todos repositorios a informaçoes do cliente baseado no id
                 ClienteAllModel cliente = new ClienteAllModel(resposta, respostaT,respostaE, respostaRS);
-
+                
+                // se nao encontrar
                 if (resposta == null)
                 {
                     return new
@@ -84,6 +86,7 @@ namespace api_clientes.Services
                     };
                 }
 
+                // se der certo
                 return new
                 {
                     status = 200,
@@ -113,6 +116,7 @@ namespace api_clientes.Services
         {
             try
             {
+                // verifica se o cliente existe antes de apagar
                 if (Get(id).data.Cliente.ID <= 0)
                 {
                     return new
@@ -149,6 +153,7 @@ namespace api_clientes.Services
         {
             try
             {   
+                // verifica se existe algum campo vazio
                 if (String.IsNullOrEmpty(cliente.NOME) || String.IsNullOrEmpty(cliente.RG) || String.IsNullOrEmpty(cliente.DATA_NASCIMENTO.ToString()) || String.IsNullOrEmpty(cliente.CPF))
                 {
                     return new
@@ -159,6 +164,28 @@ namespace api_clientes.Services
                     };
                 }
 
+                // validacao regex de cpf
+                if (!isCpf(cliente.CPF))
+                {
+                    return new
+                    {
+                        status = 500,
+                        message = "Cpf Invalido",
+                        data = cliente
+                    };
+                }
+
+                // validacao regex de rg
+                if (!isRg(cliente.RG)) {
+                    return new
+                    {
+                        status = 500,
+                        message = "Rg Invalido",
+                        data = cliente
+                    };
+                }
+
+                // Se chegar aqui, salva o cliente
                 var resposta = repositorio.Add(cliente);
 
                 return new
@@ -196,6 +223,7 @@ namespace api_clientes.Services
         {
             try
             {
+                // verifica se existe algum campo vazio
                 if (String.IsNullOrEmpty(cliente.NOME) || String.IsNullOrEmpty(cliente.RG) || String.IsNullOrEmpty(cliente.DATA_NASCIMENTO.ToString()) || String.IsNullOrEmpty(cliente.CPF))
                 {
                     return new
@@ -204,6 +232,9 @@ namespace api_clientes.Services
                         message = "Campo vazio",
                         data = cliente
                     };
+
+
+                  //verifica se id é valido
                 } else if (id <= 0)
                 {
                     return new
@@ -213,6 +244,28 @@ namespace api_clientes.Services
                         data = cliente
                     };
 
+                }
+
+                // valida regex cpf
+                if (!isCpf(cliente.CPF))
+                {
+                    return new
+                    {
+                        status = 500,
+                        message = "Cpf Invalido",
+                        data = cliente
+                    };
+                }
+
+                // valida regex rg
+                if (!isRg(cliente.RG))
+                {
+                    return new
+                    {
+                        status = 500,
+                        message = "Rg Invalido",
+                        data = cliente
+                    };
                 }
 
                 var resposta = repositorio.Update(cliente, id);
@@ -226,6 +279,7 @@ namespace api_clientes.Services
             }
             catch (Exception e)
             {
+                // tratamento de erro de registro duplicado(validacao apenas de id)
                 if (e.Message.Contains("Violação da restrição UNIQUE KEY"))
                 {
                     return new
@@ -252,8 +306,10 @@ namespace api_clientes.Services
         {
             try
             {
+                //numero de paginas * a quantidade de registro por pagina = offset
                 int offset = pag * quant;
                 var resposta = repositorio.GetPag(offset, quant);
+                // valida tamanho da lista para contar o fim da paginacao
                 var tamanhoLista = repositorio.GetAll().Count();
                 return new
                 {
@@ -276,12 +332,15 @@ namespace api_clientes.Services
             }
         }
 
+        // busca de informações com paginacao e filtro de nome
         public dynamic GetPag(int pag, int quant, string nome)
         {
             try
             {
+                //numero de paginas * a quantidade de registro por pagina = offset
                 int offset = pag * quant;
                 var resposta = repositorio.GetPag(offset, quant, nome);
+                // valida tamanho da lista para contar o fim da paginacao
                 var tamanhoLista = repositorio.GetAll(nome).Count();
                 return new
                 {
@@ -303,6 +362,24 @@ namespace api_clientes.Services
                     data = pag
                 };
             }
+        }
+
+        // funcao de validacao para cpf utilizado regex
+        public bool isCpf(string cpf)
+        {
+            Regex validador = new Regex(@"^\d{3}\.\d{3}\.\d{3}-\d{2}$");
+
+            MatchCollection matches = validador.Matches(cpf);
+            return matches.Count > 0;
+        }
+
+        // funcao de validacao para rg utilizado regex
+        public bool isRg(string rg)
+        {
+            Regex validador = new Regex(@"(^(\d{2}\x2E\d{3}\x2E\d{3}[-]\d{1})$|^(\d{2}\x2E\d{3}\x2E\d{3})$)");
+            MatchCollection matches = validador.Matches(rg);
+            return matches.Count > 0;
+
         }
 
 

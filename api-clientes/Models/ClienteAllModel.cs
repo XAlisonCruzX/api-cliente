@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace api_clientes.Models
 {
+    // Objeto para retorno dos serviços, contem as listas relacionadas ao cliente
     public class ClienteAllModel
     {
         private int _id;

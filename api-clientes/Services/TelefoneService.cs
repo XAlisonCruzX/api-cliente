@@ -3,6 +3,7 @@ using api_clientes.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace api_clientes.Services
@@ -160,6 +161,17 @@ namespace api_clientes.Services
 
                 }
 
+                //validacao de telefone
+                if (!isTelefone(telefone.NUMERO))
+                {
+                    return new
+                    {
+                        status = 500,
+                        message = "Telefone invalido",
+                        data = telefone.NUMERO
+                    };
+                }
+
                 var resposta = repositorio.Add(telefone);
 
                 return new
@@ -218,6 +230,16 @@ namespace api_clientes.Services
 
                 }
 
+                if (!isTelefone(telefone.NUMERO))
+                {
+                    return new
+                    {
+                        status = 500,
+                        message = "Telefone invalido",
+                        data = telefone.NUMERO
+                    };
+                }
+
                 var resposta = repositorio.Update(telefone, id);
 
                 return new
@@ -248,6 +270,13 @@ namespace api_clientes.Services
                     };
                 }
             }
+        }
+
+        public bool isTelefone(string telefone)
+        {
+            Regex validador = new Regex(@"(\(?\d{2}\)?\s)?(\d{4,5}\-\d{4})");
+            MatchCollection matches = validador.Matches(telefone);
+            return matches.Count > 0;
         }
 
 

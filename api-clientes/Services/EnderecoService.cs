@@ -3,6 +3,7 @@ using api_clientes.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace api_clientes.Services
@@ -148,6 +149,17 @@ namespace api_clientes.Services
                         data = endereco
                     };
                 }
+                //validacao de cep
+                if (!isCep(endereco.CEP))
+                {
+                    return new
+                    {
+                        status = 500,
+                        message = "Cep invalido",
+                        data = endereco.CEP
+                    };
+
+                }
 
                 var resposta = repositorio.Add(endereco);
 
@@ -207,6 +219,17 @@ namespace api_clientes.Services
 
                 }
 
+                if (!isCep(endereco.CEP))
+                {
+                    return new
+                    {
+                        status = 500,
+                        message = "Cep invalido",
+                        data = endereco.CEP
+                    };
+
+                }
+
                 var resposta = repositorio.Update(endereco, id);
 
                 return new
@@ -239,7 +262,13 @@ namespace api_clientes.Services
             }
         }
 
-
+        // validacao de cep por regex
+        public bool isCep(string cep)
+        {
+            Regex validador = new Regex(@"(^(\d{5})-(\d{3})$)");
+            MatchCollection matches = validador.Matches(cep);
+            return matches.Count > 0;
+        }
 
 
 

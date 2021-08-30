@@ -12,18 +12,20 @@ namespace api_clientes.Repositories
     {
         public IConexao Conexao;
 
+        //Ao instanciar recebe conexao com o DB
         public ClienteRepository(IConexao Conexao)
         {
             this.Conexao = Conexao;
         }
 
-
+        // Insere os dados do cliente
         public int Add(ClienteModel cliente)
         {
             try
             {
                 using (var cn = Conexao.AbrirConexao())
                 {
+                    // retorna o id do cliente
                     var resposta = cn.ExecuteScalar<int>(@"INSERT INTO CLIENTES (NOME, DATA_NASCIMENTO, CPF, RG) 
                                 OUTPUT Inserted.ID
                                 VALUES (@NOME, @DATA_NASCIMENTO, @CPF, @RG)", new
@@ -43,6 +45,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        // Deleta clietne pelo id
         public int Delete(int id)
         {
             try
@@ -61,7 +64,7 @@ namespace api_clientes.Repositories
         }
 
        
-
+        // Retorna cliente pelo id
         public ClienteModel Get(int id)
         {
             try
@@ -79,6 +82,7 @@ namespace api_clientes.Repositories
             }
         }
 
+        // Lista todos clientes
         public List<ClienteModel> GetAll()
         {
 
@@ -98,7 +102,7 @@ namespace api_clientes.Repositories
             
         }
 
-
+        // lista todos cliente com filtro no nome
         public List<ClienteModel> GetAll(string nome)
         {
 
@@ -120,7 +124,7 @@ namespace api_clientes.Repositories
 
 
 
-
+        // Atualiza dados do cliente pelo id
         public int Update(ClienteModel cliente, int id)
         {
             try
@@ -145,6 +149,9 @@ namespace api_clientes.Repositories
             }
         }
 
+        // Retorna lista de clientes com paginacao
+        // offset= numero do registro que começa a busca,
+        // quant = quantidade de registros a buscar
         public List<ClienteModel> GetPag(int offset, int quant)
         {
 
@@ -166,6 +173,11 @@ namespace api_clientes.Repositories
                 throw;
             }
         }
+
+        // Retorna lista de clientes com paginacao com filtro pelo nome
+        // offset= numero do registro que começa a busca,
+        // quant = quantidade de registros a buscar
+        // nome = filtro
         public List<ClienteModel> GetPag(int offset, int quant, string nome)
         {
 

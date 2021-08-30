@@ -22,6 +22,7 @@ namespace api_clientes.Database
         {
             try
             {
+                // retorna conexao com o banco de dados apartir da string recebida
                 var cn = new SqlConnection(_connectionString);
                 return cn;
 
