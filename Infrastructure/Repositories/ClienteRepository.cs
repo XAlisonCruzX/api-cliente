@@ -12,71 +12,112 @@ namespace api_clientes.Repositories
     {
         public IConexao Conexao;
 
+        //Ao instanciar recebe conexao com o DB
         public ClienteRepository(IConexao Conexao)
         {
             this.Conexao = Conexao;
         }
 
+        // Insere os dados do cliente
         public int Add(ClienteModel cliente)
         {
-            using (var cn = Conexao.AbrirConexao())
+            try
             {
-                var resposta = cn.ExecuteScalar<int>(@"INSERT INTO CLIENTES (NOME, DATA_NASCIMENTO, CPF, RG) 
-                            OUTPUT Inserted.ID
-                            VALUES (@NOME, @DATA_NASCIMENTO, @CPF, @RG)", new
+                using (var cn = Conexao.AbrirConexao())
                 {
-                    cliente.NOME,
-                    cliente.DATA_NASCIMENTO,
-                    cliente.CPF,
-                    cliente.RG
-                });
+                    // retorna o id do cliente
+                    var resposta = cn.ExecuteScalar<int>(@"INSERT INTO CLIENTES (NOME, DATA_NASCIMENTO, CPF, RG) 
+                                OUTPUT Inserted.ID
+                                VALUES (@NOME, @DATA_NASCIMENTO, @CPF, @RG)", new
+                    {
+                        cliente.NOME,
+                        cliente.DATA_NASCIMENTO,
+                        cliente.CPF,
+                        cliente.RG
+                    });
 
-                return resposta;
+                    return resposta;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
         // Deleta clietne pelo id
         public int Delete(int id)
         {
-            using (var cn = Conexao.AbrirConexao())
+            try
             {
-                var resposta = cn.Execute(@"DELETE FROM CLIENTES WHERE ID = @id", new { id });
-                return resposta;
-            }    
+                using (var cn = Conexao.AbrirConexao())
+                {
+                    var resposta = cn.Execute(@"DELETE FROM CLIENTES WHERE ID = @id", new { id });
+                    return resposta;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
 
 
         // Retorna cliente pelo id
         public ClienteModel Get(int id)
         {
-            using (var cn = Conexao.AbrirConexao())
+            try
             {
-                var resposta = cn.Query<ClienteModel>(@"SELECT * FROM CLIENTES WHERE ID = @id", new { id });
+                using (var cn = Conexao.AbrirConexao())
+                {
+                    var resposta = cn.Query<ClienteModel>(@"SELECT * FROM CLIENTES WHERE ID = @id", new { id });
 
-                return resposta.FirstOrDefault();
+                    return resposta.FirstOrDefault();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
         // Lista todos clientes
         public List<ClienteModel> GetAll()
         {
-            using (var cn = Conexao.AbrirConexao())
+            try
             {
-                var resposta = cn.Query<ClienteModel>(@"SELECT * FROM CLIENTES");
+                using (var cn = Conexao.AbrirConexao())
+                {
+                    var resposta = cn.Query<ClienteModel>(@"SELECT * FROM CLIENTES");
 
-                return resposta.ToList();
+                    return resposta.ToList();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
         // lista todos cliente com filtro no nome
         public List<ClienteModel> GetAll(string nome)
         {
-            using (var cn = Conexao.AbrirConexao())
-            {
-                var resposta = cn.Query<ClienteModel>(@"SELECT * FROM CLIENTES WHERE NOME LIKE @nome", new { nome = "%" + nome + "%" });
 
-                return resposta.ToList();
+            try
+            {
+                using (var cn = Conexao.AbrirConexao())
+                {
+                    var resposta = cn.Query<ClienteModel>(@"SELECT * FROM CLIENTES WHERE NOME LIKE @nome", new { nome = "%" + nome + "%" });
+
+                    return resposta.ToList();
+                }
             }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
 
 
@@ -84,18 +125,25 @@ namespace api_clientes.Repositories
         // Atualiza dados do cliente pelo id
         public int Update(ClienteModel cliente, int id)
         {
-            using (var cn = Conexao.AbrirConexao())
+            try
             {
-                var resposta = cn.ExecuteScalar<int>(@"UPDATE CLIENTES SET NOME = @NOME, DATA_NASCIMENTO = @DATA_NASCIMENTO, CPF = @CPF , RG = @RG WHERE ID = @id  ", new
+                using (var cn = Conexao.AbrirConexao())
                 {
-                    id,
-                    cliente.NOME,
-                    cliente.DATA_NASCIMENTO,
-                    cliente.CPF,
-                    cliente.RG
-                });
+                    var resposta = cn.ExecuteScalar<int>(@"UPDATE CLIENTES SET NOME = @NOME, DATA_NASCIMENTO = @DATA_NASCIMENTO, CPF = @CPF , RG = @RG WHERE ID = @id  ", new
+                    {
+                        id,
+                        cliente.NOME,
+                        cliente.DATA_NASCIMENTO,
+                        cliente.CPF,
+                        cliente.RG
+                    });
 
-                return resposta;
+                    return resposta;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -104,15 +152,24 @@ namespace api_clientes.Repositories
         // quant = quantidade de registros a buscar
         public List<ClienteModel> GetPag(int offset, int quant)
         {
-            using (var cn = Conexao.AbrirConexao())
-            {
-                var resposta = cn.Query<ClienteModel>(@"Select * from CLIENTES order by id OFFSET @offset ROWS FETCH NEXT @quant ROWS ONLY", new
-                {
-                    offset,
-                    quant
 
-                });
-                return resposta.ToList();
+            try
+            {
+                using (var cn = Conexao.AbrirConexao())
+                {
+                    var resposta = cn.Query<ClienteModel>(@"Select * from CLIENTES order by id OFFSET @offset ROWS FETCH NEXT @quant ROWS ONLY", new
+                    {
+                        offset,
+                        quant
+
+                    });
+                    return resposta.ToList();
+                }
+
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -122,16 +179,25 @@ namespace api_clientes.Repositories
         // nome = filtro
         public List<ClienteModel> GetPag(int offset, int quant, string nome)
         {
-            using (var cn = Conexao.AbrirConexao())
-            {
-                var resposta = cn.Query<ClienteModel>(@"Select * from CLIENTES WHERE NOME LIKE @nome ORDER BY ID OFFSET @offset ROWS FETCH NEXT @quant ROWS ONLY", new
-                {
-                    nome = "%" + nome + "%",
-                    offset,
-                    quant
 
-                });
-                return resposta.ToList();
+            try
+            {
+                using (var cn = Conexao.AbrirConexao())
+                {
+                    var resposta = cn.Query<ClienteModel>(@"Select * from CLIENTES WHERE NOME LIKE @nome ORDER BY ID OFFSET @offset ROWS FETCH NEXT @quant ROWS ONLY", new
+                    {
+                        nome = "%" + nome + "%",
+                        offset,
+                        quant
+
+                    });
+                    return resposta.ToList();
+                }
+
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
