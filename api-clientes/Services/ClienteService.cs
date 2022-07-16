@@ -12,7 +12,6 @@ namespace api_clientes.Services
     {
 
         private IClienteRepository repositorio;
-
         private IEnderecoRepository serviceE;
         private ITelefoneRepository serviceT;
         private IRdSocialRepository serviceRS;

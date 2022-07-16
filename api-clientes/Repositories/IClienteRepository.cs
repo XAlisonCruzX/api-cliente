@@ -9,7 +9,6 @@ namespace api_clientes.Repositories
 {
     public interface IClienteRepository
     {
-
         int Add(ClienteModel cliente);
         int Update(ClienteModel cliente, int id);
         int Delete(int id);
@@ -18,8 +17,6 @@ namespace api_clientes.Repositories
         List<ClienteModel> GetAll(string nome);
         List<ClienteModel> GetPag(int pag, int quant);
         List<ClienteModel> GetPag(int pag, int quant, string nome);
-
-
 
     }
 }
